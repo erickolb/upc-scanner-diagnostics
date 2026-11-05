@@ -31,7 +31,23 @@
 <button id="interrupt">Simulate incomplete scan</button>
 <p>Incomplete scans time out after 2 seconds of inactivity. After a timeout, scan again to verify recovery.</p>
 </section>
-<section><h2>Focus test log</h2><pre id="test-log">No focus tests completed.</pre></section>
+<section><h2>3. Main UPC only</h2>
+<p>Leave addenda enabled. Cover the small supplemental barcode bars with opaque paper, leaving the main barcode visible. Use the same comic as Expected barcode. Start this test, then scan; the page will focus the background for you.</p>
+<p>Expected base UPC: <strong id="base-expected"></strong></p>
+<button id="base-start">Prepare 12-digit test</button>
+<p id="base-state" class="indicator" role="status">☐ Not started.</p>
+</section>
+<section><h2>4. Ordinary typing</h2>
+<p>With Capture enabled, start this test. Type <code>scan 123x</code>, press Backspace to remove the x, then Enter, then type <code>done</code>. Do not use the scanner. Click Check typing when finished.</p>
+<button id="typing-start">Start typing test</button><textarea id="typing-field" rows="3" aria-label="Ordinary typing test"></textarea><button id="typing-check">Check typing</button>
+<p id="typing-state" class="indicator" role="status">☐ Not started.</p>
+</section>
+<section><h2>5. Timeout recovery</h2>
+<p>Enable Capture and set Expected barcode to the full UPC you will scan. Start this test to simulate a partial scan containing 12345. Wait for the two-second timeout and READY message, then scan that comic normally. This tests software recovery; it does not physically interrupt the scanner.</p>
+<button id="timeout-start">Start timeout recovery test</button>
+<p id="timeout-state" class="indicator" role="status">☐ Not started.</p>
+</section>
+<section><h2>Test log</h2><pre id="test-log">No tests completed.</pre></section>
 <section><h2>Captured scans</h2><p>Only Enter completes a scan. 12 digits means base UPC; 17 digits means extended UPC. Other payloads are rejected.</p><pre id="results">No completed scans.</pre></section>
 <section><h2>Keyboard event log</h2><button id="clear">Clear log and results</button><button id="download">Download report</button><pre id="log"></pre></section>
 <script type="module" src="app.mjs"></script>

@@ -20,3 +20,6 @@ Pass means scans work anywhere in the active document, retain all digits, comple
 
 The Capture switch enables interception. Live indicators distinguish background readiness and test-button readiness. Click the background pad or focus the test button, then scan. Completed results retain start/end focus and activation counts in the on-screen Focus test log and downloaded report. A green PASS requires a valid prefixed 12- or 17-digit UPC, stable appropriate focus, and (for the button) no new activations. Expected barcode matching is reported separately; PASS validates capture and focus, not catalog identity.
 
+
+Guided tests: Prepare 12-digit test snapshots the expected main UPC and focuses the background. Cover the supplemental bars and scan; a full extended scan produces RETRY. Ordinary typing checks exact multiline text plus Backspace/Enter and absence of captured scans. Timeout recovery seeds a simulated partial payload, records the timeout, then requires a fresh physical prefixed scan matching the expected UPC. All results appear in Test log and focusTests in the downloaded JSON.
+
