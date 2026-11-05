@@ -1,5 +1,22 @@
 # UPC scanner diagnostics
 
+## Offline Android app
+
+Download the APK from this repository's Releases, open it on Android, and allow installation from your download app when Android prompts. Requires Android 9 or later and a current Android System WebView. The app is named **UPC Scanner Diagnostics**, separate from Hardlight. No server, account, Internet permission, or runtime Bluetooth permission is required. All page assets are bundled in the APK; reports stay on-device until you explicitly save/share them.
+
+1. Pair the Tera in Android Settings using **Bluetooth HID**, not SPP/BLE app mode. Keep the STX prefix, carriage-return terminator, and desired addenda setting.
+2. Open the app in Observe mode, focus the baseline field, and scan. Determine how STX reaches Android; Ctrl+B is only confirmed on PC so far.
+3. Select the observed prefix, enable Capture, and repeat the focus, 12-digit, typing, and timeout tests. For ordinary typing, use Android's on-screen keyboard or a physical keyboard; the scanner isn't used for that step.
+4. **Download report** opens Android's document picker. Save the JSON and attach it to the diagnostic discussion. Test airplane mode with Bluetooth re-enabled to demonstrate offline operation.
+
+### Build without deployment
+
+Install JDK 17 and the Android SDK with platform 36 and build-tools 36.0.0. Set `ANDROID_HOME` to your SDK directory (or use an untracked `android/local.properties` with `sdk.dir`). From `android/`, run `./gradlew :app:assembleDebug :app:lintDebug` on Linux/macOS, or `gradlew.bat :app:assembleDebug :app:lintDebug` on Windows. The first build downloads Gradle/build dependencies; the installed app itself is offline. Gradle copies the root HTML/JS into generated assets automatically. Output: `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+The installable diagnostic APK uses Android's debug signing certificate. Builds made on different machines/CI may have different signing keys and cannot update one another: export reports and uninstall the older app first if Android reports a signature conflict. This is a testing toolkit, not a production-signed Hardlight release. CI builds and lints the APK and retains it as a workflow artifact.
+
+The host serves an in-memory HTTPS origin from bundled assets so JavaScript modules work without file-URL exceptions. It does not intercept scanner keys natively: tests exercise the normal WebView keyboard path. Native code only hosts the page and saves exported JSON. Physical Bluetooth behavior must be tested on each device; a successful build does not establish scanner compatibility.
+
 Standalone, local-only keyboard diagnostics for a Tera 1100L. No dependencies, API credentials, or Metron requests. This is a hardware integration test page, with small automated parser tests.
 
 Serve this directory with any static HTTP server and open index.html. For example, with Python installed: `python -m http.server 8080`, then open http://localhost:8080. Run parser checks with `node --test parser.test.mjs`.

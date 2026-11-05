@@ -136,6 +136,8 @@ $('typing-check').onclick = () => {
 };
 $('clear').onclick = () => {reset('Cleared.'); events=[]; scans=[]; focusTests=[]; $('test-log').textContent='No focus tests completed.'; $('button-result').className='indicator'; $('button-result').textContent='☐ Button-focus test not completed.'; $('log').textContent=''; $('results').textContent='No completed scans.'; $('captured-upc').textContent='No UPC captured yet.'; $('capture-state').className='indicator'; $('capture-state').textContent='☐ Waiting for a prefixed scan with background focus.';};
 $('download').onclick = () => {
-  const blob = new Blob([JSON.stringify({userAgent:navigator.userAgent,mode:mode(),prefix:$('prefix').value,custom:$('custom').value,expected:$('expected').value,activations,focusTests,scans,events},null,2)],{type:'application/json'});
+  const report = JSON.stringify({userAgent:navigator.userAgent,host:window.AndroidDiagnostics ? 'offline Android WebView' : 'browser',mode:mode(),prefix:$('prefix').value,custom:$('custom').value,expected:$('expected').value,activations,focusTests,scans,events},null,2);
+  if(window.AndroidDiagnostics) {window.AndroidDiagnostics.saveReport(report); return;}
+  const blob = new Blob([report],{type:'application/json'});
   const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href=url; a.download='scanner-diagnostics.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
