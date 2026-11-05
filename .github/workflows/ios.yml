@@ -1,0 +1,38 @@
+name: iOS diagnostics IPA
+on:
+  push:
+    branches: [main]
+    tags: ['ios-v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parser tests
+        run: node --test parser.test.mjs
+      - name: Build device IPA and simulator app
+        run: |
+          bash ios/build.sh iphoneos
+          bash ios/build.sh iphonesimulator
+      - name: Simulator launch
+        run: |
+          device=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for a in d["devices"].values() for x in a if "iPhone" in x["name"]))')
+          xcrun simctl boot "$device"
+          xcrun simctl bootstatus "$device" -b
+          xcrun simctl install "$device" ios/build/iphonesimulator/Payload/ScannerDiagnostics.app
+          xcrun simctl launch "$device" me.erickolb.upcdiagnostics
+          sleep 5
+          xcrun simctl io "$device" screenshot dist/ios-simulator.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-diagnostics
+          path: dist/*
+      - name: Publish LiveContainer package
+        if: startsWith(github.ref, 'refs/tags/ios-v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.ipa dist/iOS-SHA256SUMS.txt --title 'iOS diagnostics 0.1.1 — LiveContainer' --notes-file docs/ios-release-notes.md --prerelease

@@ -48,3 +48,15 @@ Print [the one-page Tera 1100L addenda On/Off card](docs/tera-1100l-addenda-on-o
 
 Print [the two-page Bluetooth pairing and unpairing guide](docs/tera-1100l-bluetooth-pair-unpair.pdf) for HID pairing barcodes, phone-side Forget steps, and the optional return-to-PC wireless mode barcode.
 
+
+## Offline iOS / LiveContainer
+
+The iOS IPA is attached to iOS releases in this repository. On your iPhone, save it to Files, open LiveContainer, tap **+**, select the IPA, and launch **UPC Diagnostics**. Requires iOS 15+. LiveContainer handles import/signing; the distributed IPA is ad-hoc signed, without an Apple provisioning profile. It is not for direct standalone installation. Official import instructions: https://github.com/LiveContainer/LiveContainer#installing-apps
+
+Pair Bluetooth HID in iOS Settings. Keep STX and Enter configured. Observe a scan first: iOS prefix mapping is unverified, even though PC and Android both delivered Ctrl+B. Select the observed mapping and run the guided tests. Download report opens the iOS share sheet; choose Save to Files. This requires no Android/PC server. Reports identify the offline iOS WKWebView host.
+
+Build on a Mac with Xcode command-line tools: `bash ios/build.sh iphoneos`. Output: `dist/upc-scanner-diagnostics-ios-0.1.1.ipa`. To build for a simulator: `bash ios/build.sh iphonesimulator`. No third-party iOS dependencies or Apple developer credentials are needed for this LiveContainer package. The wrapper serves bundled assets through a custom local URL scheme; the build combines the shared parser and app into one classic script to avoid custom-scheme JavaScript module restrictions. It does not intercept scanner keys natively.
+
+## Interpreting typing results
+
+Since 0.1.1, correct final text with no false scans is a pass. Missing deletion evidence yields **PASS WITH CAVEAT**, not FAIL; beforeinput/input events can establish deletion when soft keyboards omit Backspace keydown. See [reviewed PC/Android results](docs/test-results.md). The original Android 0.1.0 report is not rewritten. A successful new build is not a new physical device test.

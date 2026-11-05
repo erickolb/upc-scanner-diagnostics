@@ -1,4 +1,4 @@
-import {classify, isPrefix} from './parser.mjs';
+import {classify, isPrefix, typingOutcome} from './parser.mjs';
 const $ = id => document.getElementById(id);
 let active = false, buffer = '', timer, events = [], scans = [], activations = 0;
 let scanFocus = null, backgroundThroughout = false, physicalPrefix = false;
@@ -128,16 +128,26 @@ $('typing-start').onclick = () => {
   cancelGuided('typing test started'); reset(); typingTest={scans:scans.length,backspace:false,enter:false}; $('typing-field').value=''; $('typing-field').focus(); indicator('typing-state','READY — type scan 123x, Backspace, Enter, then done.',true);
 };
 $('typing-field').addEventListener('keydown',e=>{if(typingTest && !e.defaultPrevented){if(e.key==='Backspace')typingTest.backspace=true;if(e.key==='Enter')typingTest.enter=true;}});
+for(const type of ['beforeinput','input']) $('typing-field').addEventListener(type,e=>{
+  if(typingTest && !e.defaultPrevented) {
+    if(e.inputType === 'deleteContentBackward') typingTest.deletionInput=true;
+    if(e.inputType === 'insertLineBreak' || e.inputType === 'insertParagraph') typingTest.enter=true;
+  }
+  events.push({at:new Date().toISOString(),type:e.type,inputType:e.inputType,data:e.data,target:'typing-field',prevented:e.defaultPrevented}); events=events.slice(-600);
+  $('log').textContent=events.map(x=>JSON.stringify(x)).join('\n');
+});
 $('typing-check').onclick = () => {
   if(!typingTest) {indicator('typing-state','Start the typing test first.'); return;}
-  const actual=$('typing-field').value, pass=mode()==='capture' && !typingTest.settingsChanged && !active && actual==='scan 123\ndone' && typingTest.backspace && typingTest.enter && scans.length===typingTest.scans;
-  indicator('typing-state',pass ? 'PASS — typing, Backspace, and Enter worked; no scan was captured.' : 'FAIL — expected scan 123, newline, done; Capture must stay enabled, editing keys must be used, and no scans may occur.',pass);
-  logFocusTest({at:new Date().toISOString(),useCase:'ordinary typing',outcome:pass?'PASS':'FAIL',value:actual,backspace:typingTest.backspace,enter:typingTest.enter,scansBefore:typingTest.scans,scansAfter:scans.length}); typingTest=null;
+  const actual=$('typing-field').value;
+  const result=typingOutcome({value:actual,capture:mode()==='capture',settingsChanged:typingTest.settingsChanged,active,scansBefore:typingTest.scans,scansAfter:scans.length,backspace:typingTest.backspace,deletionInput:typingTest.deletionInput});
+  indicator('typing-state',result.outcome === 'FAIL' ? 'FAIL — expected scan 123, newline, done, unchanged Capture settings, and no captured scans.' : result.outcome + ' — ' + (result.caveat || 'Correct text, deletion observed, and no false scans.'),result.outcome !== 'FAIL');
+  logFocusTest({at:new Date().toISOString(),useCase:'ordinary typing',...result,value:actual,backspace:typingTest.backspace,deletionInput:!!typingTest.deletionInput,enter:typingTest.enter,scansBefore:typingTest.scans,scansAfter:scans.length}); typingTest=null;
 };
 $('clear').onclick = () => {reset('Cleared.'); events=[]; scans=[]; focusTests=[]; $('test-log').textContent='No focus tests completed.'; $('button-result').className='indicator'; $('button-result').textContent='☐ Button-focus test not completed.'; $('log').textContent=''; $('results').textContent='No completed scans.'; $('captured-upc').textContent='No UPC captured yet.'; $('capture-state').className='indicator'; $('capture-state').textContent='☐ Waiting for a prefixed scan with background focus.';};
 $('download').onclick = () => {
-  const report = JSON.stringify({userAgent:navigator.userAgent,host:window.AndroidDiagnostics ? 'offline Android WebView' : 'browser',mode:mode(),prefix:$('prefix').value,custom:$('custom').value,expected:$('expected').value,activations,focusTests,scans,events},null,2);
+  const report = JSON.stringify({reportVersion:2,userAgent:navigator.userAgent,host:window.AndroidDiagnostics ? 'offline Android WebView' : window.webkit?.messageHandlers?.saveReport ? 'offline iOS WKWebView' : 'browser',mode:mode(),prefix:$('prefix').value,custom:$('custom').value,expected:$('expected').value,activations,focusTests,scans,events},null,2);
   if(window.AndroidDiagnostics) {window.AndroidDiagnostics.saveReport(report); return;}
+  if(window.webkit?.messageHandlers?.saveReport) {window.webkit.messageHandlers.saveReport.postMessage(report); return;}
   const blob = new Blob([report],{type:'application/json'});
   const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href=url; a.download='scanner-diagnostics.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
