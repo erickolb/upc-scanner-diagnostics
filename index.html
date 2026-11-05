@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UPC scanner diagnostics</title>
+<style>body{font:16px system-ui;max-width:1000px;margin:32px auto;padding:0 20px;background:#101824;color:#e6edf5}section{background:#1c293b;padding:20px;margin:18px 0;border-radius:12px}input,select,textarea,button{font:inherit;padding:9px;margin:5px;max-width:100%;box-sizing:border-box}textarea{width:95%}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow:auto}label{display:block}small{color:#b5c9df}a{color:#91caff}</style>
+<h1>UPC scanner diagnostics</h1>
+<p>Keep this page active. No scans or keystrokes leave your browser. Observation mode records keys typed anywhere on this page: use sample text only.</p>
+<section><h2>1. Observe the scanner</h2>
+<p>Start without a prefix. Scan a known comic below. Then configure STX and scan again. Inspect the event log to learn what the scanner actually sends.</p>
+<label>Baseline input <textarea rows="2" placeholder="Scan here in observation mode"></textarea></label>
+<label>Expected barcode <input id="expected" value="75960621560700111" inputmode="numeric"></label>
+<label>Mode <select id="mode"><option value="observe">Observe only — do not intercept</option><option value="capture">Capture prefixed scans</option></select></label>
+<label>Prefix <select id="prefix"><option value="ctrl-b">Ctrl+B key event (candidate STX mapping)</option><option value="stx">Literal STX key value (U+0002)</option><option value="f9">F9</option><option value="custom">Custom single key</option></select></label>
+<label>Custom key (KeyboardEvent.key) <input id="custom" placeholder="e.g. ~"></label>
+<p><small>Ctrl+B is a hypothesis, not an assumption about the Tera. Capture mode prevents the detected prefix and scan keys from acting on page controls. Observation mode does not suppress shortcuts.</small></p>
+<p id="status" role="status">Observe mode. Waiting for events.</p>
+</section>
+<section><h2>2. Test focus independence</h2>
+<p>In capture mode, scan while this field, the button, or the background has focus. Sample text must stay unchanged; the button must not activate.</p>
+<input id="unrelated" value="keep this text" aria-label="Unrelated text field">
+<button id="probe">Focus test button</button><span id="clicks">Activations: 0</span>
+<button id="interrupt">Simulate incomplete scan</button>
+<p>Incomplete scans time out after 2 seconds of inactivity. After a timeout, scan again to verify recovery.</p>
+</section>
+<section><h2>Captured scans</h2><p>Only Enter completes a scan. 12 digits means base UPC; 17 digits means extended UPC. Other payloads are rejected.</p><pre id="results">No completed scans.</pre></section>
+<section><h2>Keyboard event log</h2><button id="clear">Clear log and results</button><button id="download">Download report</button><pre id="log"></pre></section>
+<script type="module" src="app.mjs"></script>
+</html>
