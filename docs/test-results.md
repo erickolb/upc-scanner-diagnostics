@@ -13,3 +13,8 @@ Version 0.1.1 records beforeinput/input deletion evidence as well as key events.
 Addenda On required the supplement to be readable in these tests. Addenda Off allowed main-only capture. Automatic fallback under a single scanner setting has not been demonstrated.
 
 iOS/LiveContainer: package prepared for testing; physical scanner validation pending. Results there apply to WKWebView inside LiveContainer, not automatically to a standalone signed Hardlight app.
+
+## iOS package build, 2026-11-05
+
+Version 0.1.1 device IPA and simulator app compiled on barovia.chateaulore.net with Xcode 26.3. Ad-hoc signing verification and post-transfer SHA-256 verification passed. Published as ios-v0.1.1 for LiveContainer import. Simulator startup was still pending at publication; runtime rendering, LiveContainer import, and physical Bluetooth tests are not yet marked passed.
+
