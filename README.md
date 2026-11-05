@@ -40,3 +40,8 @@ The Capture switch enables interception. Live indicators distinguish background 
 
 Guided tests: Prepare 12-digit test snapshots the expected main UPC and focuses the background. Cover the supplemental bars and scan; a full extended scan produces RETRY. Ordinary typing checks exact multiline text plus Backspace/Enter and absence of captured scans. Timeout recovery seeds a simulated partial payload, records the timeout, then requires a fresh physical prefixed scan matching the expected UPC. All results appear in Test log and focusTests in the downloaded JSON.
 
+
+## Printable scanner controls
+
+Print [the one-page Tera 1100L addenda On/Off card](docs/tera-1100l-addenda-on-off.pdf) at 100% / Actual size. It reproduces the original manual barcodes with room for scanning. Scan a setting directly; keep the configured prefix and terminator.
+
