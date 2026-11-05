@@ -12,10 +12,26 @@ Version 0.1.1 records beforeinput/input deletion evidence as well as key events.
 
 Addenda On required the supplement to be readable in these tests. Addenda Off allowed main-only capture. Automatic fallback under a single scanner setting has not been demonstrated.
 
-iOS/LiveContainer: package prepared for testing; physical scanner validation pending. Results there apply to WKWebView inside LiveContainer, not automatically to a standalone signed Hardlight app.
+iOS/LiveContainer: physical results are recorded below. Results apply to WKWebView inside LiveContainer, not automatically to a standalone signed Hardlight app.
 
 ## iOS package build, 2026-11-05
 
 Version 0.1.1 device IPA and simulator app compiled on barovia.chateaulore.net with Xcode 26.3. Ad-hoc signing verification and post-transfer SHA-256 verification passed. Published as ios-v0.1.1 for LiveContainer import. Simulator startup was still pending at publication; runtime rendering, LiveContainer import, and physical Bluetooth tests are not yet marked passed.
 
 Follow-up: The iPhone simulator on Barovia completed startup, launched UPC Diagnostics, and rendered the bundled page (screenshot visually checked). Physical LiveContainer import, scanner input, and share-sheet export remain pending.
+
+## iPhone physical tests, 2026-11-05 (supersedes pending status above)
+
+Offline iOS WKWebView through LiveContainer, iPhone OS 18.7, diagnostics 0.1.1:
+
+- STX maps to Ctrl+B, matching PC and Android.
+- Repeated exact 17-digit UPC capture with background focus: PASS.
+- Main-only 12-digit UPC capture with Addenda Off: PASS.
+- Simulated timeout followed by fresh exact full UPC capture: PASS.
+- LiveContainer import and JSON report export: PASS, demonstrated by the supplied reports.
+- Button-focus test: NOT APPLICABLE to the tested iPhone touch workflow. Tapping activated the button but left document focus on body. Scans did not add activations. No follow-up button-focus test is required for this workflow; this does not claim buttons can never receive programmatic or keyboard focus on iOS.
+- Ordinary typing after showing the software keyboard: PASS, no caveat. Final value was `scan 123\ndone`; Backspace, deletion input, and Enter were observed; scan count stayed 1 to 1.
+
+The human observed that the manual's printed-page-17 **Show/Hide iOS Virtual HID Keyboard** barcode acts immediately to toggle the current keyboard state, rather than establishing a persistent keyboard preference. Select the typing field and scan this command when the hardware-keyboard connection suppresses the software keyboard. The optional double-trigger keyboard setting remains an experiment and is not required for acceptance.
+
+The tested PC, Android, and iPhone workflows support prefix-driven, cursor-independent UPC capture. Android ordinary typing retains its documented deletion-event caveat. Scanner addenda mode must still be selected explicitly; automatic 17-/12-digit hardware fallback was not established.
