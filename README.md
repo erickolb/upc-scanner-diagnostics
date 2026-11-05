@@ -17,3 +17,6 @@ Serve this directory with any static HTTP server and open index.html. For exampl
 9. Download the JSON report. Record OS, browser version, scanner connection, prefix configuration, and any failed steps alongside it.
 
 Pass means scans work anywhere in the active document, retain all digits, complete exactly once, and do not change unrelated controls. This does not capture input sent to browser chrome, other apps, or another frame. Android and iPhone require separate validation. The page retains only the latest 600 keyboard events; clearing or reloading discards them. Reports contain typed sample text, so do not type passwords here.
+
+The Capture switch enables interception. Live indicators distinguish background readiness and test-button readiness. Click the background pad or focus the test button, then scan. Completed results retain start/end focus and activation counts in the on-screen Focus test log and downloaded report. A green PASS requires a valid prefixed 12- or 17-digit UPC, stable appropriate focus, and (for the button) no new activations. Expected barcode matching is reported separately; PASS validates capture and focus, not catalog identity.
+
