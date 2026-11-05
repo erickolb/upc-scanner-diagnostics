@@ -18,3 +18,4 @@ iOS/LiveContainer: package prepared for testing; physical scanner validation pen
 
 Version 0.1.1 device IPA and simulator app compiled on barovia.chateaulore.net with Xcode 26.3. Ad-hoc signing verification and post-transfer SHA-256 verification passed. Published as ios-v0.1.1 for LiveContainer import. Simulator startup was still pending at publication; runtime rendering, LiveContainer import, and physical Bluetooth tests are not yet marked passed.
 
+Follow-up: The iPhone simulator on Barovia completed startup, launched UPC Diagnostics, and rendered the bundled page (screenshot visually checked). Physical LiveContainer import, scanner input, and share-sheet export remain pending.
