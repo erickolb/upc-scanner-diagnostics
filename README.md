@@ -60,3 +60,7 @@ Build on a Mac with Xcode command-line tools: `bash ios/build.sh iphoneos`. Outp
 ## Interpreting typing results
 
 Since 0.1.1, correct final text with no false scans is a pass. Missing deletion evidence yields **PASS WITH CAVEAT**, not FAIL; beforeinput/input events can establish deletion when soft keyboards omit Backspace keydown. See [reviewed PC/Android results](docs/test-results.md). The original Android 0.1.0 report is not rewritten. A successful new build is not a new physical device test.
+
+### Maintainer iOS build host
+
+Use `barovia.chateaulore.net` for iOS builds and simulator verification. Cloud iOS build automation is intentionally omitted; the Android workflow remains. Transfer the committed source to a dedicated `~/Projects/upc-scanner-diagnostics` directory on Barovia, then run `bash ios/build.sh iphoneos` and `bash ios/build.sh iphonesimulator`. Retrieve the IPA and iOS-SHA256SUMS.txt from dist, verify the checksum, and attach them to the separate iOS release. No Apple provisioning profile is needed for LiveContainer import.
