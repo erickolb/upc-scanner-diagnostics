@@ -45,3 +45,6 @@ Guided tests: Prepare 12-digit test snapshots the expected main UPC and focuses 
 
 Print [the one-page Tera 1100L addenda On/Off card](docs/tera-1100l-addenda-on-off.pdf) at 100% / Actual size. It reproduces the original manual barcodes with room for scanning. Scan a setting directly; keep the configured prefix and terminator.
 
+
+Print [the two-page Bluetooth pairing and unpairing guide](docs/tera-1100l-bluetooth-pair-unpair.pdf) for HID pairing barcodes, phone-side Forget steps, and the optional return-to-PC wireless mode barcode.
+
